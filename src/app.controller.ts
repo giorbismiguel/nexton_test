@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
 import { OperationsAvailableGuard } from './operations-available/operations-available.guard';
 
@@ -10,6 +10,12 @@ export class AppController {
   @Post()
   @UseGuards(OperationsAvailableGuard)
   calculator(@Body('expression') expression: string): string {
-    return this.appService.evalExpression(expression);
+    try {
+      return this.appService.evalExpression(expression);    
+    } catch (error) {
+      throw new BadRequestException('Malformed expression');
+      
+    }
+    
   }
 }
